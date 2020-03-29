@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bottom25 Correlation</title>
+	<script src = "https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<svg width="1000" height="1000"></svg>
+	<script>
+		const margin = 60;
+	    const width = 1000 - 2*margin;
+	    const height = 600 - 2*margin;
+
+		var svg = d3.select('svg');
+
+		//positioning the chart 
+		const chart = svg.append('g')
+    		.attr('transform', `translate(${margin}, ${margin})`);
+
+    	var myVars = ['AAL', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ADBE', 'AES', 'AIZ', 'AKAM', 'ALB', 'ALLE', 'ALXN', 'AMAT', 'AMP', 'AMT', 'AMZN', 'ANSS', 'AOS', 'APA', 'APD', 'APH', 'APTV', 'ARNC', 'ATVI']
+
+
+    	d3.csv("https://raw.githubusercontent.com/pranay0124/DADV/master/SVG/correlationDataForBottom25.csv", function(data) {
+    		// console.log(data)
+    		const xScale = d3.scaleBand()
+			    .range([0, width])
+			    .domain(myVars);
+
+			chart.append('g')
+				.attr('transform', "translate(0," + height + ")")
+			    .call(d3.axisBottom(xScale));
+
+	    	const yScale = d3.scaleBand()
+			    .range([height,0])
+			    .domain(myVars);
+
+			chart.append('g')
+	    		.call(d3.axisLeft(yScale));
+
+
+	    	var myColor = d3.scaleLinear()
+	    		.range(["red", "blue"])
+			  	.domain([-1,1])
+	    	
+	    	console.log("start")
+
+
+			chart.selectAll()
+			    .data([data])
+		      	.enter()
+		      	.append("rect")
+		      	.attr("x", function(d) { return xScale(d.CompanyA) })
+		      	.attr("y", function(d) { return yScale(d.CompanyB) })
+		      	.attr("width", xScale.bandwidth() )
+		      	.attr("height", yScale.bandwidth() )
+		      	.style("fill", function(d) { return myColor(d.Value)} )
+			
+			console.log("end")
+    	});
+
+    	console.log("done");
+
+	</script>
+</body>
+</html>
+
